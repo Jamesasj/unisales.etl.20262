@@ -26,7 +26,6 @@ dt_ref = (select max(dt_criacao) from f_venda);
 insert into f_venda (column1, column2, column3)     
     select * from venda where dt_criacao > dt_ref;
 
-
 var res = select * from venda where dt_atualizacao > dt_ref;
 
 update f_venda
@@ -35,9 +34,6 @@ update f_venda
         column3 = res.column3
     from res
     where f_venda.id = res.id;
-
-
-
 
 Incremento Controlado Por data com rotação;
 
