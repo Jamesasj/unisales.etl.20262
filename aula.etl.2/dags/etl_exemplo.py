@@ -1,7 +1,6 @@
-from datetime import datetime
+from datetime import datetime, time
 import json
 from pathlib import Path
-
 from airflow.sdk import dag, task
 
 
@@ -26,7 +25,14 @@ def etl_exemplo_persistencia_local():
             {**registro, "valor_total": registro["quantidade"] * 10}
             for registro in registros
         ]
-
+    
+    @task
+    def transformar2(registros):    
+        return [
+            {**registro, "valor_total": registro["quantidade"] * 10}
+            for registro in registros
+        ]
+    
     @task
     def persistir(registros):
         destino = Path("/opt/airflow/data/resultado_etl.json")
@@ -37,7 +43,11 @@ def etl_exemplo_persistencia_local():
         )
         return str(destino)
 
-    persistir(transformar(extrair()))
+    extracao = extrair()
+    tranfor = transformar(extracao)
+    tranfor2 = transformar2(extracao)
+    result = persistir(tranfor)
 
+    extracao >>[tranfor, tranfor2] >> result
 
 etl_exemplo_persistencia_local()
